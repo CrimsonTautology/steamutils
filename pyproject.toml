@@ -1,0 +1,50 @@
+[build-system]
+requires = ["setuptools", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "steamutils"
+description = "Tools for performing analytics on steam users, steam groups and servers using the SteamAPI and various popular SourceMod plugins"
+version = "0.0.1"
+authors = [
+  { name = "CrimsonTautology", email = "billehs+github@gmail.com"}
+]
+
+readme = "README.md"
+requires-python = ">=3.9"
+keywords = ["CLI", "steam", "srcds"]
+license = {text = "MIT"}
+classifiers = [
+  # See: https://pypi.org/classifiers/
+  "Environment :: Console",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "License :: OSI Approved :: MIT License",
+]
+dependencies = [
+  "requests"
+]
+
+
+[project.scripts]
+steamutils = "steamutils.__main__:main"
+
+[tool.pytest.ini_options]
+markers = [
+  "unit",
+  "integration"
+]
+testpaths = [
+  "tests",
+]
+pythonpath = [
+  "src"
+]
+
+[tool.black]
+line-length = 100
+
+[tool.mypy]
+ignore_missing_imports = false
+mypy_path = "./src"
+check_untyped_defs = true
