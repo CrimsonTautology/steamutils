@@ -1,4 +1,1 @@
-"""Read the version from installed package data."""
-from pkg_resources import get_distribution
-
-__version__ = get_distribution("steamutils").version
+__version__ = "0.0.1"
