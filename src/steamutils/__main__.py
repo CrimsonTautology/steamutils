@@ -11,8 +11,8 @@ def main(argv=None):
     parser.add_argument("-p", "--print", action="store_true", help="print hello world")
     parser.add_argument("-V", "--version", action="version", version=version)
     args = parser.parse_args(argv)
-    if args.print:
-        print("Hello world!")
+
+    print(f"testing: Hello world! {args}")
 
 
 def init():

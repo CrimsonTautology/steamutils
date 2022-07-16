@@ -32,9 +32,9 @@ class SteamID:
     ID64_CLAN_IDENTIFIER = 0x0170000000000000
 
     RE_ID = re.compile(r"STEAM_(?P<universe>[0-5]):(?P<checkdigit>[01]):(?P<account>\d+)")
-    RE_ID3 = re.compile(r"\[?(?P<account_type>[IUMGAPCgTLca]):1:(?P<account>\d+)\[?")
+    RE_ID3 = re.compile(r"\[?(?P<account_type>[IUMGAPCgTLca]):1:(?P<encode32>\d+)\[?")
+    RE_ID64 = re.compile(r"((https?://)?steamcommunity.com/profiles/)?(?P<id64>\d+)([/?].*)?")
 
-    RE_URL_ID64 = re.compile(r"(https?://)?steamcommunity.com/profiles/(?P<id64>\d+)")
     RE_URL_VANITY = re.compile(r"(https?://)?steamcommunity.com/id/(?P<vanity>.+)")
 
     id: str
@@ -42,27 +42,44 @@ class SteamID:
     id64: int
 
     def __init__(self, identifier: int | str) -> None:
-        # TODO
-        # account = id64 - cls.ID64_INDIVIDUAL_IDENTIFIER
         account = 0
         universe = 0
         account_type = "U"
         checkdigit = 0
 
+        identifier = str(identifier)
+
         if parse := re.match(self.RE_ID, identifier):
-            # convert from SteamID
+            # normalize from SteamID
             account = int(parse.group("account"))
+            checkdigit = int(parse.group("checkdigit"))
+
+            # unused
             universe = int(parse.group("universe"))
+
+        elif parse := re.match(self.RE_ID3, identifier):
+            # normalize from Steam3 ID
+            encode32 = int(parse.group("encode32"))
+            account = encode32 // 2
+            checkdigit = encode32 % 2
+
+            # unused
+            account_type = parse.group("account_type")
+
+        elif parse := re.match(self.RE_ID64, identifier):
+            # normalize from SteamID64 or steamcommunity url that contains SteamID64
+            id64 = int(parse.group("id64"))
+            account = (id64 - self.ID64_INDIVIDUAL_IDENTIFIER) // 2
+            checkdigit = id64 % 2
 
         else:
             raise NotASteamIDException(f'SteamID for "{identifier}" could not be found')
 
-        checkdigit = account % 2
-        w = (account * 2) + checkdigit
+        encode32 = (account * 2) + checkdigit
 
         self.id = f"STEAM_{universe}:{checkdigit}:{account}"
-        self.id3 = f"[{account_type}:1:{w}]"
-        self.id64 = (account * 2) + self.ID64_INDIVIDUAL_IDENTIFIER + checkdigit
+        self.id3 = f"[{account_type}:1:{encode32}]"
+        self.id64 = encode32 + self.ID64_INDIVIDUAL_IDENTIFIER
 
     @property
     def steam_url(self) -> str:
