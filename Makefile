@@ -6,9 +6,6 @@ lint:
 black:
 	@black src
 
-venv:
-	test -d env || python -m venv env
-
 test:
 	@pytest -ra -q
 
