@@ -1,6 +1,6 @@
 import pytest
 
-from steamutils.models import SteamID, NotASteamIDException
+from steamutils import SteamID, NotASteamIDException
 
 ROBIN = ("STEAM_0:0:84901", "[U:1:169802]", 76561197960435530)
 ROBIN_PLUS_ONE = ("STEAM_0:1:84901", "[U:1:169803]", 76561197960435531)

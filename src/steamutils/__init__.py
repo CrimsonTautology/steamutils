@@ -2,8 +2,11 @@
 
 from .__main__ import main
 from ._version import __version__
+from .steamid import SteamID, NotASteamIDException
 
 __all__ = [
+    "NotASteamIDException",
+    "SteamID",
     "__version__",
     main.__name__,
 ]

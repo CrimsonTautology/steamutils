@@ -1,7 +1,7 @@
 import requests
 from urllib.parse import urljoin
 
-from steamutils.models import SteamID
+from steamutils import SteamID
 
 
 def get_owned_games():
